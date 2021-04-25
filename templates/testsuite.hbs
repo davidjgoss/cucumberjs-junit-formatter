@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite errors="0" failures="{{summary.failed}}" name="cucumber-js" skipped="{{summary.skipped}}" tests="{{tests.length}}" time="{{formatDuration summary.duration}}">
+        {{#each tests}}
+            <testcase classname="{{this.pickle.uri}}" name="{{this.pickle.name}}" time="{{formatDuration this.duration}}">
+                <system-out>
+                    {{#each this.steps}}
+                        {{formatStep this}}
+                    {{/each}}
+                </system-out>
+                {{#if this.failed}}<failure message="{{this.result.status}}">{{this.result.message}}</failure>{{/if}}
+                {{#if this.skipped}}<skipped/>{{/if}}
+            </testcase>
+        {{/each}}
+    </testsuite>
+</testsuites>

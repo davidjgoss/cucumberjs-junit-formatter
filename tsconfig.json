@@ -1,0 +1,20 @@
+{
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "es2019",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "inlineSourceMap": true,
+    "declarationMap": true,
+    "noImplicitAny": false
+  }
+}
