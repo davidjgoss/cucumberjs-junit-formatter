@@ -9,10 +9,13 @@
     "templates/"
   ],
   "scripts": {
-    "build": "rm -r dist/ && tsc",
+    "build": "tsc",
+    "dev": "npm run build && cucumber-js --retry 1 --retry-tag-filter @retry --format ./dist/index.js:test-result.xml",
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
-    "dev": "npm run build && cucumber-js --retry 1 --retry-tag-filter @retry --format ./dist/index.js:test-result.xml",
+    "prebuild": "del-cli dist/**",
+    "predev": "npm run build",
+    "pretest": "npm run build",
     "test": "ava"
   },
   "keywords": [],
@@ -31,6 +34,7 @@
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
     "ava": "^3.15.0",
+    "del-cli": "^4.0.0",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
