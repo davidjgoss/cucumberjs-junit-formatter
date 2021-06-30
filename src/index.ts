@@ -15,6 +15,7 @@ import fs from 'fs'
 import { JunitTemplateContext } from './types'
 import { formatStep } from './format-step'
 import { formatDuration } from './format-duration'
+import path from 'path'
 const {
   addDurations,
   millisecondsToDuration,
@@ -22,9 +23,12 @@ const {
 } = TimeConversion
 
 const compiler = handlebars.create()
-const template = fs.readFileSync('templates/testsuite.hbs', {
-  encoding: 'utf-8',
-})
+const template = fs.readFileSync(
+  path.join(__dirname, '..', 'templates', 'testsuite.hbs'),
+  {
+    encoding: 'utf-8',
+  }
+)
 compiler.registerHelper('formatDuration', formatDuration)
 compiler.registerHelper('formatStep', formatStep)
 const templateDelegate = compiler.compile<JunitTemplateContext>(template)
