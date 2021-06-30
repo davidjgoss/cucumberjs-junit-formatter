@@ -15,6 +15,7 @@ import fs from 'fs'
 import { JunitTemplateContext } from './types'
 import { formatStep } from './format-step'
 import { formatDuration } from './format-duration'
+import { describeStatus } from './describe-status'
 import path from 'path'
 const {
   addDurations,
@@ -31,6 +32,7 @@ const template = fs.readFileSync(
 )
 compiler.registerHelper('formatDuration', formatDuration)
 compiler.registerHelper('formatStep', formatStep)
+compiler.registerHelper('describeStatus', describeStatus)
 const templateDelegate = compiler.compile<JunitTemplateContext>(template)
 
 export default class JunitFormatter extends Formatter {
