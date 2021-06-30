@@ -1,7 +1,6 @@
 {
-  "name": "cucumberjs-junit-formatter",
+  "name": "@cucumber/junit-formatter",
   "version": "0.0.0",
-  "private": true,
   "description": "Formatter for cucumber-js that produces a JUnit-style XML test run report",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
