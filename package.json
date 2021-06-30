@@ -4,6 +4,10 @@
   "description": "Formatter for cucumber-js that produces a JUnit-style XML test run report",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "templates/"
+  ],
   "scripts": {
     "build": "rm -r dist/ && tsc",
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
