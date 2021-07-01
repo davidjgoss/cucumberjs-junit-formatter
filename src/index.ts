@@ -3,10 +3,11 @@ import {
   Duration,
   Envelope,
   getWorstTestStepResult,
+  Pickle,
   TestCase,
   TestStepResultStatus,
-  Timestamp,
   TimeConversion,
+  Timestamp,
 } from '@cucumber/messages'
 import { Query as GherkinQuery } from '@cucumber/gherkin-utils'
 import { Query as CucumberQuery } from '@cucumber/query'
@@ -17,6 +18,9 @@ import { formatStep } from './format-step'
 import { formatDuration } from './format-duration'
 import { describeStatus } from './describe-status'
 import path from 'path'
+import { ArrayMultimap } from '@teppeis/multimaps'
+import { compositeName } from './composite-name'
+
 const {
   addDurations,
   millisecondsToDuration,
@@ -36,6 +40,8 @@ compiler.registerHelper('describeStatus', describeStatus)
 const templateDelegate = compiler.compile<JunitTemplateContext>(template)
 
 export default class JunitFormatter extends Formatter {
+  names = new ArrayMultimap<string, string>()
+  pickles = new Map<string, Pickle>()
   testCases: TestCase[] = []
   gherkinQuery: GherkinQuery = new GherkinQuery()
   cucumberQuery: CucumberQuery = new CucumberQuery()
@@ -46,17 +52,29 @@ export default class JunitFormatter extends Formatter {
     options.eventBroadcaster.addListener('envelope', (envelope: Envelope) => {
       this.gherkinQuery.update(envelope)
       this.cucumberQuery.update(envelope)
+      if (envelope.pickle) {
+        this.pickles.set(envelope.pickle.id, envelope.pickle)
+      }
       if (envelope.testCase) {
         this.testCases.push(envelope.testCase)
+        const pickle = this.pickles.get(envelope.testCase.pickleId)
+        this.names.put(compositeName(pickle), pickle.id)
       }
       if (envelope.testRunStarted) {
         this.start = envelope.testRunStarted.timestamp
       }
       if (envelope.testRunFinished) {
         const tests = this.testCases.map((testCase) => {
-          const pickle = this.gherkinQuery
-            .getPickles()
-            .find((pickle) => pickle.id === testCase.pickleId)
+          const pickle = this.pickles.get(testCase.pickleId)
+          const nameInstances = this.names.get(compositeName(pickle))
+          const identity = {
+            uri: pickle.uri,
+            name:
+              pickle.name +
+              (nameInstances.length > 1
+                ? ` [${nameInstances.indexOf(pickle.id)}]`
+                : ''),
+          }
           const steps = pickle.steps.map((pickleStep) => {
             const gherkinStep = this.gherkinQuery.getStep(
               pickle.uri,
@@ -84,7 +102,7 @@ export default class JunitFormatter extends Formatter {
             .reduce((d1, d2) => addDurations(d1, d2))
           const result = getWorstTestStepResult(results)
           return {
-            pickle,
+            identity,
             steps,
             duration,
             result,

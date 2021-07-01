@@ -24,6 +24,7 @@
   "dependencies": {
     "@cucumber/gherkin-utils": "^5.1.0",
     "@cucumber/query": "^10.1.0",
+    "@teppeis/multimaps": "^2.0.0",
     "handlebars": "^4.7.7"
   },
   "devDependencies": {

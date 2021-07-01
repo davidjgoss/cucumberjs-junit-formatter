@@ -1,6 +1,5 @@
 import {
   Duration,
-  Pickle,
   PickleStep,
   Step,
   TestStepResult,
@@ -13,9 +12,14 @@ export interface ComposedStep {
   status: TestStepResultStatus
 }
 
+export interface PickleIdentity {
+  uri: string
+  name: string
+}
+
 export interface JunitTemplateContext {
   tests: {
-    pickle: Pickle
+    identity: PickleIdentity
     steps: ComposedStep[]
     duration: Duration
     result: TestStepResult
