@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuite errors="0" failures="{{summary.failed}}" name="cucumber-js" skipped="{{summary.skipped}}" tests="{{tests.length}}" time="{{formatDuration summary.duration}}">
     {{#each tests}}
-        <testcase classname="{{this.pickle.uri}}" name="{{this.pickle.name}}" time="{{formatDuration this.duration}}">
+        <testcase classname="{{this.identity.uri}}" name="{{this.identity.name}}" time="{{formatDuration this.duration}}">
             {{#if this.failed}}<failure type="{{this.result.status}}" message="{{describeStatus this.result.status}}">{{this.result.message}}</failure>{{/if}}
             {{#if this.skipped}}<skipped/>{{/if}}
             <system-out>

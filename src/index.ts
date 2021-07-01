@@ -1,22 +1,23 @@
-import { Formatter, IFormatterOptions } from '@cucumber/cucumber'
+import {Formatter, IFormatterOptions} from '@cucumber/cucumber'
 import {
   Duration,
   Envelope,
   getWorstTestStepResult,
   TestCase,
   TestStepResultStatus,
-  Timestamp,
   TimeConversion,
+  Timestamp,
 } from '@cucumber/messages'
-import { Query as GherkinQuery } from '@cucumber/gherkin-utils'
-import { Query as CucumberQuery } from '@cucumber/query'
+import {Query as GherkinQuery} from '@cucumber/gherkin-utils'
+import {Query as CucumberQuery} from '@cucumber/query'
 import handlebars from 'handlebars'
 import fs from 'fs'
-import { JunitTemplateContext } from './types'
-import { formatStep } from './format-step'
-import { formatDuration } from './format-duration'
-import { describeStatus } from './describe-status'
+import {JunitTemplateContext} from './types'
+import {formatStep} from './format-step'
+import {formatDuration} from './format-duration'
+import {describeStatus} from './describe-status'
 import path from 'path'
+
 const {
   addDurations,
   millisecondsToDuration,
@@ -84,7 +85,10 @@ export default class JunitFormatter extends Formatter {
             .reduce((d1, d2) => addDurations(d1, d2))
           const result = getWorstTestStepResult(results)
           return {
-            pickle,
+            identity: {
+              uri: pickle.uri,
+              name: pickle.name,
+            },
             steps,
             duration,
             result,
