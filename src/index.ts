@@ -2,7 +2,7 @@ import {Formatter, IFormatterOptions} from '@cucumber/cucumber'
 import {
   Duration,
   Envelope,
-  getWorstTestStepResult,
+  getWorstTestStepResult, Pickle,
   TestCase,
   TestStepResultStatus,
   TimeConversion,
@@ -37,6 +37,7 @@ compiler.registerHelper('describeStatus', describeStatus)
 const templateDelegate = compiler.compile<JunitTemplateContext>(template)
 
 export default class JunitFormatter extends Formatter {
+  pickles: Map<string, Pickle> = new Map<string, Pickle>()
   testCases: TestCase[] = []
   gherkinQuery: GherkinQuery = new GherkinQuery()
   cucumberQuery: CucumberQuery = new CucumberQuery()
@@ -47,6 +48,9 @@ export default class JunitFormatter extends Formatter {
     options.eventBroadcaster.addListener('envelope', (envelope: Envelope) => {
       this.gherkinQuery.update(envelope)
       this.cucumberQuery.update(envelope)
+      if (envelope.pickle) {
+        this.pickles.set(envelope.pickle.id, envelope.pickle)
+      }
       if (envelope.testCase) {
         this.testCases.push(envelope.testCase)
       }
@@ -55,9 +59,7 @@ export default class JunitFormatter extends Formatter {
       }
       if (envelope.testRunFinished) {
         const tests = this.testCases.map((testCase) => {
-          const pickle = this.gherkinQuery
-            .getPickles()
-            .find((pickle) => pickle.id === testCase.pickleId)
+          const pickle = this.pickles.get(testCase.pickleId)
           const steps = pickle.steps.map((pickleStep) => {
             const gherkinStep = this.gherkinQuery.getStep(
               pickle.uri,
