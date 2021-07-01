@@ -1,6 +1,5 @@
 import {
   Duration,
-  Pickle,
   PickleStep,
   Step,
   TestStepResult,
